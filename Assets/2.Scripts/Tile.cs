@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Tile
+public abstract class Tile
 {
     //방향 상수
     const int LEFT_TOP = 0;
@@ -19,11 +19,7 @@ public class Tile
     //타일의 현재 각도
     private int Angle = 0;
 
-    //타일 회전 함수
-    void rotate()
-    {
-        return;
-    }
+    public abstract void rotate();
 
     //코스트 계산 함수
     int calCost(int direction, bool isUpstairs)
