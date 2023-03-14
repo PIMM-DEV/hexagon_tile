@@ -5,21 +5,40 @@ using UnityEngine;
 public abstract class Tile
 {
     //방향 상수
-    const int LEFT_TOP = 0;
-    const int RIGHT_TOP = 1;
-    const int RIGHT_BOT = 2;
-    const int LEFT_BOT = 3;
+    protected const int LEFT_TOP = 0;
+    protected const int RIGHT_TOP = 1;
+    protected const int RIGHT_BOT = 2;
+    protected const int LEFT_BOT = 3;
 
     //각 방향 가중치 변수, 3이 넘으면 이동 불가, 추가비용은 /2 로 계산 
-    private int[] Wei = new int[4];
+    protected int[] Wei = new int[4];
 
     //연결된 타일
-    private Tile[] Node = new Tile[4];
+    protected Tile[] Node = new Tile[4];
 
     //타일의 현재 각도
     private int Angle = 0;
 
-    public abstract void rotate();
+    //회전 함수(인게임 오브젝트 회전)
+    public abstract void rotateVisual();
+
+    //회전 함수(시스템 수치 변경)
+    void rotateStatus()
+    {
+        //leftTop <-> rightBot, leftBot <-> rightTop
+        Wei[LEFT_TOP] ^= Wei[RIGHT_BOT] ^= Wei[LEFT_TOP] ^= Wei[RIGHT_BOT];
+        Wei[LEFT_BOT] ^= Wei[RIGHT_TOP] ^= Wei[LEFT_BOT] ^= Wei[RIGHT_TOP];
+
+        Angle = (Angle + 180) % 360;
+    }
+
+    //회전 함수(각 회전함수 실행)
+    void rotate()
+    {
+        rotateStatus();
+        rotateVisual();
+    }
+
 
     //코스트 계산 함수
     int calCost(int direction, bool isUpstairs)
@@ -37,7 +56,7 @@ public abstract class Tile
     }
 
     //다음 타일 인접 방향 가중치 가져오는 함수
-    private int getWeight(Tile nextTile, int direction)
+    protected int getWeight(Tile nextTile, int direction)
     {
         int oppsiteDirection = (direction + 2) % 4;
         return nextTile.Wei[oppsiteDirection];
